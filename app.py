@@ -133,6 +133,41 @@ def explorar():
     conn.close()
 
     return render_template('explorar.html', publicaciones=publicaciones_data)
+@app.route('/perfil/<int:id_usuario>')
+def perfil(id_usuario):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT nombre FROM Usuarios WHERE id_usuario = %s", (id_usuario,))
+    usuario = cur.fetchone()
+    if not usuario:
+        return "Usuario no encontrado"
+
+    nombre_usuario = usuario[0]
+
+    cur.execute("""
+        SELECT id_publicacion, contenido 
+        FROM Publicaciones 
+        WHERE id_usuario = %s 
+        ORDER BY fecha_hora DESC
+    """, (id_usuario,))
+    publicaciones = cur.fetchall()
+
+    publicaciones_data = []
+    for pub in publicaciones:
+        pub_id, contenido = pub
+        cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s", (pub_id,))
+        likes = cur.fetchone()[0]
+        publicaciones_data.append({
+            'id': pub_id,
+            'contenido': contenido,
+            'likes': likes
+        })
+
+    cur.close()
+    conn.close()
+
+    return render_template("perfil.html", publicaciones=publicaciones_data, nombre_usuario=nombre_usuario)
 
 if __name__ == '__main__':
     app.run(debug=True)
