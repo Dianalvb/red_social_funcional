@@ -1,0 +1,5 @@
+
+body { font-family: Arial, sans-serif; background: #fff8dc; }
+.post { background: #fffff0; border: 1px solid #ccc; border-radius: 10px; padding: 10px; margin: 20px; }
+textarea { width: 90%; padding: 10px; margin: 5px 0; }
+button { background: #ffcc00; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
