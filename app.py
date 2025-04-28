@@ -10,7 +10,8 @@ def get_db_connection():
         host="localhost",
         database="red_social",
         user="postgres",
-        password="Itzcoatl1"
+        password="Itzcoatl1",
+        options="-c client_encoding=UTF8"
     )
 
 @app.route('/')
