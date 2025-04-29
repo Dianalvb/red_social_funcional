@@ -1,5 +1,206 @@
 
-body { font-family: Arial, sans-serif; background: #fff8dc; }
+/*body { font-family: Arial, sans-serif; background: #fff8dc; }
 .post { background: #fffff0; border: 1px solid #ccc; border-radius: 10px; padding: 10px; margin: 20px; }
 textarea { width: 90%; padding: 10px; margin: 5px 0; }
-button { background: #ffcc00; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+button { background: #ffcc00; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }*/
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.head {
+    background-color: #fafafa;
+    padding: 10px;
+}
+
+.head .navbar img {
+    border-radius: 50%;
+}
+
+.wrap-paper {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.mobile {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+}
+
+.top1 h2 {
+    margin: 0;
+    color: #333;
+}
+
+.top2 {
+    display: flex;
+    align-items: center;
+}
+
+.profile_picture {
+    margin-right: 20px;
+}
+
+.profile_picture img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.Friends {
+    text-align: center;
+}
+
+.Friends a {
+    color: #333;
+    text-decoration: none;
+}
+
+.bio {
+    margin-top: 10px;
+}
+
+.bio h6 {
+    margin: 0;
+    color: #666;
+}
+
+.toe {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fafafa;
+    border-top: 1px solid #ddd;
+}
+
+.navbarD {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.navbarD a {
+    color: #333;
+    text-decoration: none;
+}
+
+.navbarD img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Encabezado del perfil */
+.profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-header img {
+    border-radius: 50%;
+}
+
+.profile-header h1 {
+    margin-top: 10px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: center;
+}
+
+.stat {
+    text-align: center;
+    margin: 0 10px;
+}
+
+.stat-num {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Biografía */
+.profile-bio {
+    margin-bottom: 20px;
+}
+
+.profile-bio h2 {
+    margin-bottom: 10px;
+}
+
+/* Nueva Publicación */
+.new-post {
+    margin-bottom: 20px;
+}
+
+.new-post h2 {
+    margin-bottom: 10px;
+}
+
+.post-form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.post-form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 1em;
+    background-color: #3897f0;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Barra de navegación */
+.navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.navbar img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.navbar img:hover {
+    opacity: 1;
+}
+
