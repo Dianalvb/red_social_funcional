@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de {{ nombre_usuario }}</title>
+</head>
+<body>
+    <h2>Publicaciones de {{ nombre_usuario }}</h2>
+    <a href="{{ url_for('inicio') }}">⬅ Regresar al inicio</a>
+    <hr>
+    {% for pub in publicaciones %}
+        <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+            <p>{{ pub.contenido }}</p>
+            <p>❤️ {{ pub.likes }} Me gusta</p>
+        </div>
+    {% else %}
+        <p>No hay publicaciones aún.</p>
+    {% endfor %}
+</body>
+</html>

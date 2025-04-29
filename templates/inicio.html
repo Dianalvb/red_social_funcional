@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a Ducktito</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+    <!-- MENÚ PRINCIPAL -->
+    <div class="main-menu">
+        <div class="head">
+            <div class="logo">
+                <a href="{{ url_for('inicio') }}">
+                    <img src="{{ url_for('static', filename='img/duckitologo.jpg') }}" width="100px" height="100px" alt="Logo Ducktito">
+                </a>
+            </div>
+        </div>
+
+        <h2>¡Bienvenido, {{ usuario }}!</h2>
+
+        <a href="{{ url_for('perfil', id_usuario=id_usuario) }}">👤 Ver mi perfil</a> |
+        <a href="{{ url_for('explorar') }}">🌍 Explorar</a>
+
+        <!-- Publicaciones -->
+        {% for pub in publicaciones %}
+        <div class="post">
+            <div class="header">
+                <img src="{{ url_for('static', filename='img/profile_picture.webp') }}" alt="Foto de perfil">
+                <div class="username">{{ pub.nombre }}</div>
+            </div>
+            <div class="content">
+                {% if pub.imagen %}
+                    <img src="{{ url_for('static', filename='uploads/' + pub.imagen) }}" alt="Publicación">
+                {% endif %}
+                <div class="caption">{{ pub.contenido }}</div>
+            </div>
+            <div class="actions">
+                <form action="/reaccionar" method="POST" style="display:inline;">
+                    <input type="hidden" name="id_publicacion" value="{{ pub.id_publicacion }}">
+                    <input type="hidden" name="tipo_reaccion" value="like">
+                    <button type="submit"><ion-icon name="heart-outline"></ion-icon> ({{ pub.likes }})</button>
+                </form>
+
+                <form action="/comentar" method="POST" style="display:inline;">
+                    <input type="hidden" name="id_publicacion" value="{{ pub.id_publicacion }}">
+                    <textarea name="texto" placeholder="Escribe un comentario..." required></textarea>
+                    <button type="submit"><ion-icon name="chatbox-ellipses-outline"></ion-icon> Comentar</button>
+                </form>
+            </div>
+
+            <!-- Mostrar comentarios -->
+            {% for comentario in pub.comentarios %}
+            <p style="margin-left: 30px;">🗨 {{ comentario.texto }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
