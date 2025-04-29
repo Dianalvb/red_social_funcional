@@ -171,4 +171,5 @@ def perfil(id_usuario):
     return render_template("perfil.html", publicaciones=publicaciones_data, nombre_usuario=nombre_usuario)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
