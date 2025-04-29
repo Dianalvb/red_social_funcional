@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends</title>
+    <link rel="stylesheet" href="friends.css">
+</head>
+<body>
+    
+    <div class="head">
+        <div class="navbar">
+            <a href="index.html" target="_blank">
+                <img src="img/duckitologo.jpg" width="100px" height="100px" alt="">
+            </a>
+        </div>
+    </div>
+    
+    <div class="quisas">
+        <div class="Gente que quisás conozcas">Quisás conozcas</div>
+        
+        
+        <div class="usU">
+            <div class="headerD">
+                <img src="img/profile_picture.webp" alt="Profile Picture">
+                <div class="username">Craig Cruz</div>
+            </div>
+            
+            <div class="actionsD">
+                <button>FOLLOW</button>
+            </div>
+        </div>
+        
+    <div class="toe">
+        <div class="navbarD">
+            <a href="index.html" target="_blank">
+                <img src="img/Home.png" width="20px" height="20px" alt="">
+            </a>
+        
+            <a href="explore.html" target="_blank">
+                <img src="img/lupa.png" width="20px" height="20px" alt="">
+            </a>
+        
+            <a href="YourPost.html" target="_blank">
+                <img src="img/tuperfil.png" width="20px" height="20px" alt="">
+            </a>
+
+            <a href="friends.html" target="_blank">
+                <img src="img/amigos.png" width="20px" height="20px" alt="">
+            </a>
+        </div>
+    </div> 
+    <!-- Aquí está el div que contiene el número de seguidores -->
+    <div class="stat">
+        <span class="stat-num">0</span>
+        <span class="stat-label">Seguidores</span>
+    </div>
+
+    <script>
+        // Selecciona todos los botones de clase "follow-btn"
+        var followButtons = document.querySelectorAll('.follow-btn');
+    
+        // Agrega un event listener a cada botón
+        followButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Incrementa el número de seguidores
+                var followerCount = parseInt(localStorage.getItem("followerCount") || 0);
+                localStorage.setItem("followerCount", followerCount + 1);
+                // Actualiza el número de seguidores en la página YourPost.html
+                document.querySelector('.stat-num').innerText = followerCount + 1;
+                
+                // Oculta el usuario al que se le dio follow
+                var userContainer = button.closest('.usU');
+                userContainer.style.display = 'none';
+            });
+        });
+    </script>
+    
+
+</body>
+</html>
+
+        
+        
+    </div>
+
+    <div class="toe">
+        <div class="navbarD">
+            <a href="index.html" target="_blank">
+                <img src="img/Home.png" width="20px" height="20px" alt="">
+            </a>
+        
+            <a href="explore.html" target="_blank">
+                <img src="img/lupa.png" width="20px" height="20px" alt="">
+            </a>
+        
+            <a href="YourPost.html" target="_blank">
+                <img src="img/tuperfil.png" width="20px" height="20px" alt="">
+            </a>
+
+            <a href="friends.html" target="_blank">
+                <img src="img/amigos.png" width="20px" height="20px" alt="">
+            </a>
+        </div>
+    </div> 
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

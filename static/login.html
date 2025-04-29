@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+    
+</head>
+
+<body>
+    <div id="container">
+        <div id="login-form">
+            <div class="logo">
+                <img src="img/duckitologo.jpg" alt="Logo de Duckito">
+            </div>
+            <h2>Iniciar Sesión</h2>
+            <form onsubmit="return false;">
+                <input type="text" id="username" placeholder="Nombre de Usuario">
+                <input type="password" id="password" placeholder="Contraseña">
+                <button onclick="login()">Iniciar sesión</button>
+            </form>
+            <p>¿No tienes una cuenta? <a href="registro.html">Regístrate aquí</a></p>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Verificar las credenciales (en este caso, credenciales estáticas)
+            if (username === 'usuario' && password === 'contraseña') {
+                // Redirigir al usuario a la página principal
+                window.location.href = 'index.html';
+            } else {
+                alert('Nombre de usuario o contraseña incorrectos');
+            }
+        }
+    </script>
+</body>
+
+</html>

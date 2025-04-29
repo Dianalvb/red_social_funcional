@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="YourPost.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="profile-header">
+            <img src="img/duckitologo.jpg" width="100px" height="100px" alt="Logo de Duckito">
+            <h1 id="nuevoUsuario">Juan_Pérez</h1>
+            <div class="profile-stats">
+                <div class="stat">
+                    <span class="stat-num">0</span>
+                    <span class="stat-label">Publicaciones</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-num">0</span>
+                    <span class="stat-label">Seguidores</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-num">0</span>
+                    <span class="stat-label">Seguidos</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-bio">
+            <h2>Biografía</h2>
+            <p>Hola :P hola:p</p>
+        </div>
+
+        <div class="new-post">
+            <h2>Nueva Publicación</h2>
+            <form action="#" class="post-form" method="POST">
+
+                <textarea id="postContent" rows="5" placeholder="Escribe tu publicación aquí"></textarea>
+                <input type="submit" value="Publicar">
+            </form>
+        </div>
+    </div>
+
+    <div class="navbar">
+        <a href="index.html" target="_blank">
+            <img src="img/Home.png" width="20px" height="20px" alt="Inicio">
+        </a>
+        <a href="explore.html" target="_blank">
+            <img src="img/lupa.png" width="20px" height="20px" alt="Explorar">
+        </a>
+        <a href="YourPost.html" target="_blank">
+            <img src="img/tuperfil.png" width="20px" height="20px" alt="Perfil">
+        </a>
+        <a href="friends.html" target="_blank">
+            <img src="img/amigos.png" width="20px" height="20px" alt="Amigos">
+        </a>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js">
+    </script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js">
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtener el número actual de seguidores del almacenamiento local
+        var followerCount = localStorage.getItem("followerCount");
+        // Actualizar el contenido HTML con el número actual de seguidores
+        document.querySelector('.stat-label').innerText = followerCount;
+
+        const form = document.querySelector('.post-form');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const textarea = form.querySelector('#postContent');
+            const postContent = textarea.value.trim();
+
+            if (postContent !== '') {
+                // Obtener publicaciones existentes del almacenamiento local
+                const publicaciones = JSON.parse(localStorage.getItem('publicaciones')) || [];
+
+                // Agregar la nueva publicación al array
+                publicaciones.push(postContent);
+
+                // Almacenar el array actualizado en el almacenamiento local
+                localStorage.setItem('publicaciones', JSON.stringify(publicaciones));
+
+                // Redirigir a la página de inicio
+                window.location.href = 'index.html';
+            } else {
+                alert('Por favor, escribe algo antes de publicar.');
+            }
+        });
+    });
+</script>
+
+</body>
+
+</html>

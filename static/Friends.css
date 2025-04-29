@@ -1,0 +1,73 @@
+.quisas {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.Gente {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.usU {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.headerD {
+    display: flex;
+    align-items: center;
+}
+
+.headerD img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.actionsD button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.actionsD button:hover {
+    background-color: #0056b3;
+}
+
+.toe {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fafafa;
+    border-top: 1px solid #ddd;
+}
+
+.navbarD {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.navbarD a {
+    color: #333;
+    text-decoration: none;
+}
+
+.navbarD img {
+    width: 20px;
+    height: 20px;
+}
