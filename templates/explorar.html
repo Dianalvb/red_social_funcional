@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<<<<<<< HEAD
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,15 +9,6 @@
     <!-- Íconos Font Awesome -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-=======
-    <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Explorar</title>
-            <link rel="stylesheet" href="{{ url_for('static', filename='explorar.css') }}">
-        </head>
->>>>>>> 5596ae53c071aaea7554dec954b9dc0d1dce32fe
 <body>
 
     <div class="container">
@@ -75,42 +66,5 @@
             {% endif %}
         </div>
     </div>
-
-<<<<<<< HEAD
-=======
-    <script>
-        // Puedes agregar JavaScript para interactividad adicional aquí
-        document.addEventListener('DOMContentLoaded', function() {
-            // Por ejemplo, para manejar los likes de forma asíncrona con AJAX
-            // (Requeriría implementar una ruta API en Flask)
-            
-            const likeBtns = document.querySelectorAll('.like-btn');
-            likeBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = this.closest('form');
-                    const formData = new FormData(form);
-                    
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Actualizar UI
-                            const likeCount = this.querySelector('span');
-                            likeCount.textContent = data.likes;
-                            this.classList.toggle('active');
-                        }
-                    });
-                });
-            });
-            
-        });
-    </script>
-    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-
->>>>>>> 5596ae53c071aaea7554dec954b9dc0d1dce32fe
 </body>
 </html>
