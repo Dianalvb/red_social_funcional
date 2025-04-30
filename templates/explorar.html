@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Explorar - Red Social</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='explorar.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Explorar - Personas recomendadas</h1>
+    </header>
+
+    <div class="contenedor">
+        {% for persona in personas_recomendadas %}
+        <div class="usuario">
+            <img src="{{ persona.foto_url }}" alt="Foto de {{ persona.nombre }}">
+            <h3>{{ persona.nombre }}</h3>
+            <p>{{ persona.descripcion }}</p>
+            <button class="boton-seguir">Seguir</button>
+        </div>
+        {% else %}
+        <p>No hay personas recomendadas por el momento.</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

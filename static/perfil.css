@@ -1,0 +1,51 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #fffbe6; /* Fondo amarillo muy claro */
+    color: #5c4b00; /* Marrón suave para buen contraste */
+    margin: 0;
+    padding: 0 20px;
+}
+
+h2 {
+    color: #d4a200; /* Amarillo dorado */
+    margin-top: 20px;
+}
+
+a {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #e6b800; /* Amarillo medio */
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #cc9900;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background-color: #ffe066; /* Línea sutil amarilla */
+    margin: 20px 0;
+}
+
+div.publicacion {
+    background-color: #fffde0; /* Caja más clara */
+    border: 1px solid #ffe066;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 15px;
+    box-shadow: 2px 2px 5px rgba(255, 220, 100, 0.2);
+}
+
+div.publicacion p:first-child {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+div.publicacion p:last-child {
+    font-size: 14px;
+    color: #997a00;
+}
