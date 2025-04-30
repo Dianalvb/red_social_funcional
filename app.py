@@ -84,11 +84,8 @@ def publicar():
     conn.commit()
     cur.close()
     conn.close()
-<<<<<<< HEAD
+
     return redirect(url_for('explorar'))
-=======
-    return redirect(url_for('YourPost'))
->>>>>>> 5596ae53c071aaea7554dec954b9dc0d1dce32fe
 
 @app.route('/comentar', methods=['POST'])
 def comentar():
