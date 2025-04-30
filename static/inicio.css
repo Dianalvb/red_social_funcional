@@ -1,314 +1,185 @@
-/* Estilos Ducktito - Tema Amarillo Patito de Hule */
-
-/* Variables de colores */
-:root {
-    --duck-yellow: #FFE03D;         /* Amarillo patito principal */
-    --duck-yellow-light: #FFF176;   /* Amarillo patito claro */
-    --duck-yellow-dark: #F9A825;    /* Amarillo patito oscuro */
-    --duck-orange: #FFB74D;         /* Naranja pico de pato */
-    --duck-white: #FFFFFF;          /* Blanco */
-    --duck-black: #37474F;          /* Negro suave para texto */
-    --duck-gray: #B0BEC5;           /* Gris para elementos secundarios */
-    --duck-blue: #4FC3F7;           /* Azul agua para acentos */
-}
-
 /* Estilos generales */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: var(--duck-yellow-light);
-    color: var(--duck-black);
-    line-height: 1.6;
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD54F' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-color: #FFF9C4; /* Amarillo muy claro para el fondo */
+    color: #333;
 }
 
-/* Menú principal */
-.main-menu {
-    max-width: 800px;
-    margin: 20px auto;
-    background-color: var(--duck-white);
+/* Estilos para secciones de autenticación y apariencia */
+.authentication-section, .appearance-section {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #FFEB3B; /* Amarillo más intenso */
     border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    position: relative;
-    border: 8px solid var(--duck-yellow);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 3px solid #FFC107; /* Borde amarillo dorado */
 }
 
-/* Encabezado con logo */
-.head {
-    text-align: center;
+h1, h2 {
+    color: #FF8F00; /* Amarillo naranja para los títulos */
     margin-bottom: 20px;
 }
 
-.logo {
-    display: inline-block;
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 2px solid #FFD54F; /* Amarillo más claro */
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #FFFDE7; /* Amarillo muy suave */
+}
+
+button {
+    background-color: #FFC107; /* Amarillo dorado */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #FFB300; /* Amarillo dorado más intenso */
+}
+
+/* Estilos para el menú principal */
+.main-menu {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #FFFDE7; /* Amarillo muy suave */
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 60px; /* Espacio para la barra de navegación */
+}
+
+.head {
+    background-color: #FFC107; /* Amarillo dorado */
+    padding: 10px 0;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo img {
     border-radius: 50%;
-    border: 5px solid var(--duck-yellow);
-    transition: transform 0.3s ease;
+    border: 3px solid #FFEB3B;
 }
 
-.logo img:hover {
-    transform: rotate(10deg) scale(1.05);
-}
-
-/* Mensaje de bienvenida */
-h2 {
-    text-align: center;
-    color: var(--duck-orange);
-    margin-bottom: 20px;
-    font-size: 28px;
-    text-shadow: 1px 1px 0 var(--duck-white), -1px -1px 0 var(--duck-white);
-    position: relative;
-}
-
-h2:after {
-    content: "🦆";
-    position: absolute;
-    font-size: 24px;
-    margin-left: 10px;
-}
-
-/* Enlaces de navegación */
-.main-menu > a {
-    text-decoration: none;
-    color: var(--duck-black);
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 20px;
-    background-color: var(--duck-yellow);
-    margin: 0 5px;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
-
-.main-menu > a:hover {
-    background-color: var(--duck-yellow-dark);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Publicaciones */
+/* Estilos para las publicaciones */
 .post {
-    background-color: var(--duck-white);
+    background-color: white;
+    margin: 15px;
     border-radius: 15px;
-    margin: 25px 0;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 3px solid var(--duck-yellow);
-    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #FFE082; /* Borde amarillo claro */
 }
 
-.post:before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    width: 20px;
-    height: 20px;
-    background-color: var(--duck-yellow);
-    border-radius: 50%;
-    z-index: 1;
-}
-
-.post:after {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50px;
-    width: 15px;
-    height: 15px;
-    background-color: var(--duck-yellow-dark);
-    border-radius: 50%;
-    z-index: 1;
-}
-
-/* Encabezado de publicación */
 .post .header {
+    padding: 10px;
     display: flex;
     align-items: center;
-    padding: 15px;
-    background-color: var(--duck-yellow-light);
+    background-color: #FFF8E1; /* Amarillo muy suave */
 }
 
 .post .header img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    margin-right: 15px;
-    border: 3px solid var(--duck-yellow);
+    margin-right: 10px;
+    border: 2px solid #FFD54F; /* Borde amarillo para la imagen de perfil */
 }
 
 .post .username {
     font-weight: bold;
-    font-size: 18px;
-}
-
-/* Contenido de la publicación */
-.post .content {
-    padding: 15px;
+    color: #FF8F00; /* Amarillo naranja para el nombre de usuario */
 }
 
 .post .content img {
     width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    max-height: 500px;
+    object-fit: cover;
 }
 
 .post .caption {
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-/* Acciones de la publicación */
-.post .actions {
-    display: flex;
-    flex-wrap: wrap;
     padding: 15px;
-    background-color: var(--duck-yellow-light);
-    gap: 10px;
+    color: #555;
 }
 
-.post .actions form {
-    margin-right: 15px;
+.post .actions {
+    padding: 10px;
+    display: flex;
+    border-top: 1px solid #FFE082; /* Separador amarillo claro */
 }
 
 .post .actions button {
-    background-color: var(--duck-yellow);
+    background: none;
     border: none;
-    border-radius: 20px;
-    padding: 8px 15px;
+    color: #FFA000; /* Color amarillo naranja para íconos */
+    font-size: 24px;
+    padding: 5px 10px;
+    margin-right: 10px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    transition: all 0.3s ease;
 }
 
 .post .actions button:hover {
-    background-color: var(--duck-yellow-dark);
-    transform: scale(1.05);
+    color: #FF6F00; /* Amarillo naranja más intenso al hover */
 }
 
-.post .actions button ion-icon {
-    margin-right: 5px;
-    font-size: 18px;
-}
-
-/* Área de comentarios */
-.post .actions textarea {
+/* Barra de navegación inferior */
+.toe {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid var(--duck-yellow);
-    margin-bottom: 10px;
-    resize: none;
-    font-family: inherit;
+    max-width: 600px;
+    background-color: #FFC107; /* Amarillo dorado */
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.post .actions textarea:focus {
-    outline: none;
-    border-color: var(--duck-orange);
+.navbarD {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
-/* Comentarios */
-.post p {
-    padding: 10px 15px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    margin: 5px 15px 15px;
-    position: relative;
+.navbarD a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #FFECB3; /* Fondo amarillo claro para íconos */
+    transition: background-color 0.3s;
 }
 
-.post p:before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    left: 20px;
-    width: 10px;
-    height: 10px;
-    background-color: #f5f5f5;
-    transform: rotate(45deg);
+.navbarD a:hover {
+    background-color: #FFD54F; /* Amarillo más intenso al hover */
 }
 
-/* Decoraciones adicionales patito de hule */
-.main-menu:before {
-    content: "🦆";
-    position: absolute;
-    top: -10px;
-    right: 30px;
-    font-size: 30px;
-    transform: rotate(15deg);
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
+/* Ajustes para dispositivos móviles */
+@media (max-width: 600px) {
+    .authentication-section, .appearance-section {
+        margin: 20px;
+        padding: 20px;
+    }
+    
     .main-menu {
-        margin: 10px;
-        padding: 15px;
-    }
-    
-    .post .actions {
-        flex-direction: column;
-    }
-    
-    .post .actions form {
-        margin-right: 0;
-        margin-bottom: 10px;
         width: 100%;
     }
-    
-    .logo img {
-        width: 80px;
-        height: 80px;
-    }
-}
-
-/* Detalles adicionales y animaciones */
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-}
-
-.logo {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* Personalización de ion-icons */
-ion-icon {
-    color: var(--duck-black);
-    font-size: 20px;
-    vertical-align: middle;
-}
-
-/* Botón de comentar */
-form button[type="submit"] {
-    background-color: var(--duck-yellow);
-    color: var(--duck-black);
-    font-weight: bold;
-}
-
-/* Efectos hover para elementos interactivos */
-textarea:focus::placeholder {
-    color: var(--duck-yellow-dark);
-}
-
-/* Estilo para enlaces */
-a {
-    color: var(--duck-black);
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: var(--duck-orange);
 }

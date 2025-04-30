@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import psycopg2
 
 app = Flask(__name__)
@@ -84,7 +84,7 @@ def publicar():
     conn.commit()
     cur.close()
     conn.close()
-    return redirect(url_for('inicio'))
+    return redirect(url_for('explorar'))
 
 @app.route('/comentar', methods=['POST'])
 def comentar():
@@ -104,7 +104,6 @@ def comentar():
 def explorar():
     if 'id_usuario' not in session:
         return redirect(url_for('login'))
-    
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("""
@@ -131,21 +130,33 @@ def explorar():
 
     cur.close()
     conn.close()
+    return render_template('explorar.html', publicaciones_data=publicaciones_data)
 
-    return render_template('explorar.html', publicaciones=publicaciones_data)
+@app.route('/dar_like', methods=['POST'])
+def dar_like():
+    if 'id_usuario' not in session:
+        return redirect(url_for('login'))
+    id_publicacion = request.form['id_publicacion']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id_reaccion FROM Reacciones WHERE id_usuario = %s AND id_publicacion = %s", (session['id_usuario'], id_publicacion))
+    existente = cur.fetchone()
+    if not existente:
+        cur.execute("INSERT INTO Reacciones (id_publicacion, id_usuario, tipo_reaccion) VALUES (%s, %s, %s)", (id_publicacion, session['id_usuario'], 'like'))
+        conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('explorar'))
 
 @app.route('/perfil/<int:id_usuario>')
 def perfil(id_usuario):
     conn = get_db_connection()
     cur = conn.cursor()
-
     cur.execute("SELECT nombre FROM Usuarios WHERE id_usuario = %s", (id_usuario,))
     usuario = cur.fetchone()
     if not usuario:
         return "Usuario no encontrado"
-
     nombre_usuario = usuario[0]
-
     cur.execute("""
         SELECT id_publicacion, contenido 
         FROM Publicaciones 
@@ -153,7 +164,6 @@ def perfil(id_usuario):
         ORDER BY fecha_hora DESC
     """, (id_usuario,))
     publicaciones = cur.fetchall()
-
     publicaciones_data = []
     for pub in publicaciones:
         pub_id, contenido = pub
@@ -164,10 +174,8 @@ def perfil(id_usuario):
             'contenido': contenido,
             'likes': likes
         })
-
     cur.close()
     conn.close()
-
     return render_template("perfil.html", publicaciones=publicaciones_data, nombre_usuario=nombre_usuario)
 
 if __name__ == '__main__':
