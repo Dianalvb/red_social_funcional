@@ -1,28 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Explorar - Red Social</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='explorar.css') }}">
-</head>
+    <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Explorar</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='explorar.css') }}">
+        </head>
 <body>
-
-    <header>
-        <h1>Explorar - Personas recomendadas</h1>
-    </header>
-
-    <div class="contenedor">
-        {% for persona in personas_recomendadas %}
-        <div class="usuario">
-            <img src="{{ persona.foto_url }}" alt="Foto de {{ persona.nombre }}">
-            <h3>{{ persona.nombre }}</h3>
-            <p>{{ persona.descripcion }}</p>
-            <button class="boton-seguir">Seguir</button>
+    
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="{{ url_for('index') }}" class="logo">Ducktito</a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}">Inicio</a>
+                <a href="{{ url_for('explorar') }}" class="active">Explorar</a>
+                <a href="{{ url_for('perfil') }}">Mi Perfil</a>
+                <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+            </div>
         </div>
-        {% else %}
-        <p>No hay personas recomendadas por el momento.</p>
-        {% endfor %}
+    </nav>
+
+    <div class="container">
+        
+        <h1 class="page-title">Explorar Publicaciones</h1>
+
+        
+        <div class="card nueva-publicacion">
+            <h2>Crear nueva publicación</h2>
+            <form action="{{ url_for('crear_publicacion') }}" method="post">
+                <div class="form-group">
+                    <textarea name="contenido" placeholder="¿Qué estás pensando?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Publicar</button>
+            </form>
+        </div>
+
+        
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        {% if success %}
+        <div class="success-message">{{ success }}</div>
+        {% endif %}
+
+        
+        <div class="card">
+            <h2>Últimas publicaciones</h2>
+            
+            {% if publicaciones_data %}
+                {% for pub in publicaciones_data %}
+                <div class="publicacion">
+                    <div class="publicacion-header">
+                        <div class="usuario-info">
+                            <div class="avatar">{{ pub.nombre[0] }}</div>
+                            <div>
+                                <div class="nombre-usuario">{{ pub.nombre }}</div>
+                                <div class="fecha">{{ pub.fecha_hora.strftime('%d-%m-%Y %H:%M') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="publicacion-contenido">
+                        {{ pub.contenido }}
+                    </div>
+                    <div class="publicacion-footer">
+                        <form action="{{ url_for('dar_like') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="id_publicacion" value="{{ pub.id_publicacion }}">
+                            <button type="submit" class="like-btn">
+                                <i class="fas fa-heart"></i> {{ pub.likes }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay publicaciones disponibles.</p>
+            {% endif %}
+        </div>
     </div>
 
+    <script>
+        // Puedes agregar JavaScript para interactividad adicional aquí
+        document.addEventListener('DOMContentLoaded', function() {
+            // Por ejemplo, para manejar los likes de forma asíncrona con AJAX
+            // (Requeriría implementar una ruta API en Flask)
+            /*
+            const likeBtns = document.querySelectorAll('.like-btn');
+            likeBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('form');
+                    const formData = new FormData(form);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar UI
+                            const likeCount = this.querySelector('span');
+                            likeCount.textContent = data.likes;
+                            this.classList.toggle('active');
+                        }
+                    });
+                });
+            });
+            */
+        });
+    </script>
 </body>
 </html>
