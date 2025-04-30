@@ -48,3 +48,25 @@ button {
 button:hover {
     background-color: #FFA500; /* Naranja */
 }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFF99;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* ocupa toda la altura de la pantalla */
+}
+
+#login-form {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #dddfe2;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center; /* centra el contenido interno */
+}

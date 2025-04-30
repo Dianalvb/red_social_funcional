@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
 
@@ -100,6 +99,7 @@ def comentar():
     cur.close()
     conn.close()
     return redirect(url_for('inicio'))
+
 @app.route('/explorar')
 def explorar():
     if 'id_usuario' not in session:
@@ -118,7 +118,6 @@ def explorar():
     publicaciones_data = []
     for pub in publicaciones:
         id_publicacion, id_usuario, nombre, contenido, fecha_hora = pub
-        # Contar likes
         cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s", (id_publicacion,))
         likes = cur.fetchone()[0]
         publicaciones_data.append({
@@ -134,6 +133,7 @@ def explorar():
     conn.close()
 
     return render_template('explorar.html', publicaciones=publicaciones_data)
+
 @app.route('/perfil/<int:id_usuario>')
 def perfil(id_usuario):
     conn = get_db_connection()
@@ -172,4 +172,3 @@ def perfil(id_usuario):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
