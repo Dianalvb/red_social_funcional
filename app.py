@@ -71,7 +71,7 @@ def inicio():
         })
     cur.close()
     conn.close()
-    return render_template('YourPost.html', publicaciones=publicaciones_con_comentarios, usuario=session['nombre'], id_usuario=session['id_usuario'])
+    return render_template('inicio.html', publicaciones=publicaciones_con_comentarios, usuario=session['nombre'], id_usuario=session['id_usuario'])
 
 @app.route('/publicar', methods=['POST'])
 def publicar():
@@ -84,7 +84,7 @@ def publicar():
     conn.commit()
     cur.close()
     conn.close()
-    return redirect(url_for('inicio'))
+    return redirect(url_for('YourPost'))
 
 @app.route('/comentar', methods=['POST'])
 def comentar():
