@@ -55,23 +55,51 @@ def registro():
 def inicio():
     if 'id_usuario' not in session:
         return redirect(url_for('login'))
+
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT p.id_publicacion, u.nombre, p.contenido FROM Publicaciones p JOIN Usuarios u ON p.id_usuario = u.id_usuario ORDER BY p.fecha_hora DESC")
+
+    cur.execute("""
+        SELECT p.id_publicacion, u.nombre, p.contenido
+        FROM Publicaciones p
+        JOIN Usuarios u ON p.id_usuario = u.id_usuario
+        ORDER BY p.fecha_hora DESC
+    """)
     publicaciones = cur.fetchall()
-    publicaciones_con_comentarios = []
+
+    publicaciones_data = []
     for pub in publicaciones:
-        cur.execute("SELECT texto FROM Comentarios WHERE id_publicacion = %s", (pub[0],))
+        pub_id, usuario, contenido = pub
+
+        cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s AND tipo_reaccion = 'like'", (pub_id,))
+        likes = cur.fetchone()[0]
+
+        cur.execute("SELECT id_reaccion FROM Reacciones WHERE id_publicacion = %s AND id_usuario = %s AND tipo_reaccion = 'like'",
+                    (pub_id, session['id_usuario']))
+        ya_dio_like = cur.fetchone() is not None
+
+        cur.execute("""
+            SELECT c.texto, u.nombre, c.fecha_hora
+            FROM Comentarios c
+            JOIN Usuarios u ON c.id_usuario = u.id_usuario
+            WHERE c.id_publicacion = %s
+            ORDER BY c.fecha_hora ASC
+        """, (pub_id,))
         comentarios = cur.fetchall()
-        publicaciones_con_comentarios.append({
-            'id': pub[0],
-            'usuario': pub[1],
-            'contenido': pub[2],
+
+        publicaciones_data.append({
+            'id': pub_id,
+            'usuario': usuario,
+            'contenido': contenido,
+            'likes': likes,
+            'ya_dio_like': ya_dio_like,
             'comentarios': comentarios
         })
+
     cur.close()
     conn.close()
-    return render_template('inicio.html', publicaciones=publicaciones_con_comentarios, usuario=session['nombre'], id_usuario=session['id_usuario'])
+
+    return render_template('inicio.html', publicaciones=publicaciones_data, id_usuario=session['id_usuario'])
 
 @app.route('/publicar', methods=['POST'])
 def publicar():
@@ -91,14 +119,18 @@ def publicar():
 def comentar():
     if 'id_usuario' not in session:
         return redirect(url_for('login'))
+
     id_publicacion = request.form['id_publicacion']
     texto = request.form['texto']
+
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("INSERT INTO Comentarios (id_publicacion, id_usuario, texto) VALUES (%s, %s, %s)", (id_publicacion, session['id_usuario'], texto))
+    cur.execute("INSERT INTO Comentarios (id_publicacion, id_usuario, texto) VALUES (%s, %s, %s)",
+                (id_publicacion, session['id_usuario'], texto))
     conn.commit()
     cur.close()
     conn.close()
+
     return redirect(url_for('inicio'))
 
 @app.route('/explorar')
@@ -133,21 +165,29 @@ def explorar():
     conn.close()
     return render_template('explorar.html', publicaciones_data=publicaciones_data)
 
-@app.route('/dar_like', methods=['POST'])
-def dar_like():
+@app.route('/dar_like/<int:id_publicacion>', methods=['POST'])
+def dar_like(id_publicacion):
     if 'id_usuario' not in session:
         return redirect(url_for('login'))
-    id_publicacion = request.form['id_publicacion']
+
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id_reaccion FROM Reacciones WHERE id_usuario = %s AND id_publicacion = %s", (session['id_usuario'], id_publicacion))
+
+    cur.execute("SELECT id_reaccion FROM Reacciones WHERE id_usuario = %s AND id_publicacion = %s AND tipo_reaccion = 'like'",
+                (session['id_usuario'], id_publicacion))
     existente = cur.fetchone()
-    if not existente:
-        cur.execute("INSERT INTO Reacciones (id_publicacion, id_usuario, tipo_reaccion) VALUES (%s, %s, %s)", (id_publicacion, session['id_usuario'], 'like'))
-        conn.commit()
+
+    if existente:
+        cur.execute("DELETE FROM Reacciones WHERE id_reaccion = %s", (existente[0],))
+    else:
+        cur.execute("INSERT INTO Reacciones (id_publicacion, id_usuario, tipo_reaccion) VALUES (%s, %s, %s)",
+                    (id_publicacion, session['id_usuario'], 'like'))
+
+    conn.commit()
     cur.close()
     conn.close()
-    return redirect(url_for('explorar'))
+
+    return redirect(url_for('inicio'))
 
 @app.route('/perfil/<int:id_usuario>')
 def perfil(id_usuario):

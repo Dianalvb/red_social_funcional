@@ -1,186 +1,55 @@
-
-/* Estilos generales */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
 body {
-    background-color: #FFF9C4; /* Amarillo muy claro para el fondo */
-    color: #333;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 20px;
 }
 
-/* Estilos para secciones de autenticación y apariencia */
-.authentication-section, .appearance-section {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 30px;
-    background-color: #FFEB3B; /* Amarillo más intenso */
-    border-radius: 20px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+header {
     text-align: center;
-    border: 3px solid #FFC107; /* Borde amarillo dorado */
+    margin-bottom: 30px;
 }
 
-h1, h2 {
-    color: #FF8F00; /* Amarillo naranja para los títulos */
+.post {
+    background: #fff;
+    padding: 15px;
     margin-bottom: 20px;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    margin: 15px 0;
-    border: 2px solid #FFD54F; /* Amarillo más claro */
-    border-radius: 10px;
-    font-size: 16px;
-    background-color: #FFFDE7; /* Amarillo muy suave */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 button {
-    background-color: #FFC107; /* Amarillo dorado */
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 10px;
-    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s;
+}
+
+textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 6px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.like-activo {
+    filter: drop-shadow(0 0 5px yellow) brightness(1.4);
+    transform: scale(1.1);
+    transition: 0.2s ease;
+}
+
+.like-inactivo {
+    filter: grayscale(30%);
+    transition: 0.2s ease;
+}
+
+.comentarios {
     margin-top: 10px;
-}
-
-button:hover {
-    background-color: #FFB300; /* Amarillo dorado más intenso */
-}
-
-/* Estilos para el menú principal */
-.main-menu {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #FFFDE7; /* Amarillo muy suave */
-    min-height: 100vh;
-    position: relative;
-    padding-bottom: 60px; /* Espacio para la barra de navegación */
-}
-
-.head {
-    background-color: #FFC107; /* Amarillo dorado */
-    padding: 10px 0;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.logo img {
-    border-radius: 50%;
-    border: 3px solid #FFEB3B;
-}
-
-/* Estilos para las publicaciones */
-.post {
-    background-color: white;
-    margin: 15px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #FFE082; /* Borde amarillo claro */
-}
-
-.post .header {
     padding: 10px;
-    display: flex;
-    align-items: center;
-    background-color: #FFF8E1; /* Amarillo muy suave */
+    background: #f8f8f8;
+    border-radius: 6px;
 }
 
-.post .header img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    border: 2px solid #FFD54F; /* Borde amarillo para la imagen de perfil */
-}
-
-.post .username {
-    font-weight: bold;
-    color: #FF8F00; /* Amarillo naranja para el nombre de usuario */
-}
-
-.post .content img {
-    width: 100%;
-    max-height: 500px;
-    object-fit: cover;
-}
-
-.post .caption {
-    padding: 15px;
-    color: #555;
-}
-
-.post .actions {
-    padding: 10px;
-    display: flex;
-    border-top: 1px solid #FFE082; /* Separador amarillo claro */
-}
-
-.post .actions button {
-    background: none;
-    border: none;
-    color: #FFA000; /* Color amarillo naranja para íconos */
-    font-size: 24px;
-    padding: 5px 10px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-.post .actions button:hover {
-    color: #FF6F00; /* Amarillo naranja más intenso al hover */
-}
-
-/* Barra de navegación inferior */
-.toe {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-width: 600px;
-    background-color: #FFC107; /* Amarillo dorado */
-    padding: 10px 0;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.navbarD {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.navbarD a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #FFECB3; /* Fondo amarillo claro para íconos */
-    transition: background-color 0.3s;
-}
-
-.navbarD a:hover {
-    background-color: #FFD54F; /* Amarillo más intenso al hover */
-}
-
-/* Ajustes para dispositivos móviles */
-@media (max-width: 600px) {
-    .authentication-section, .appearance-section {
-        margin: 20px;
-        padding: 20px;
-    }
-    
-    .main-menu {
-        width: 100%;
-    }
+.comentarios li {
+    margin-bottom: 10px;
 }

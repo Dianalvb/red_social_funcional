@@ -2,49 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenido a Ducktito</title>
+    <title>Inicio - Ducktito</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='inicio.css') }}">
 </head>
 <body>
-    <header class="head">
-        <div class="logo">
-            <img src="{{ url_for('static', filename='img/duckitologo.jpg') }}" width="100" alt="Logo">
-        </div>
+    <header>
         <h1>Bienvenido a Ducktito</h1>
     </header>
 
     {% for pub in publicaciones %}
     <div class="post">
-        <div class="header">
-            <img src="{{ url_for('static', filename='img/profile_picture.webp') }}" alt="Perfil">
-            <div class="username">{{ pub[1] }}</div>
-        </div>
-        <div class="content">
-            <p class="caption">{{ pub[2] }}</p>
-        </div>
-        <div class="actions">
-            <form action="{{ url_for('reaccionar') }}" method="post" style="display:inline;">
-                <input type="hidden" name="id_publicacion" value="{{ pub[0] }}">
-                <input type="hidden" name="tipo_reaccion" value="like">
-                <button type="submit">
-                    <img src="{{ url_for('static', filename='img/like.png') }}" width="20" alt="Like">
-                </button>
-            </form>
+        <div><strong>{{ pub['usuario'] }}</strong></div>
+        <p>{{ pub['contenido'] }}</p>
 
-            <a href="{{ url_for('comentar_publicacion', id_publicacion=pub[0]) }}">
-                <img src="{{ url_for('static', filename='img/mensaje.png') }}" width="20" alt="Comentario">
-            </a>
+        <!-- Botón de like -->
+        <form action="{{ url_for('dar_like', id_publicacion=pub['id']) }}" method="post" style="display:inline;">
+            <button type="submit" style="background:none; border:none; padding:0;">
+                <img src="{{ url_for('static', filename='img/like_duck.png') }}"
+                     width="32"
+                     class="{% if pub['ya_dio_like'] %}like-activo{% else %}like-inactivo{% endif %}"
+                     alt="Like">
+            </button>
+            <span>{{ pub['likes'] }}</span>
+        </form>
+
+        <!-- Comentarios -->
+        <div class="comentarios">
+            <h4>Comentarios:</h4>
+            {% if pub['comentarios'] %}
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for c in pub['comentarios'] %}
+                    <li>
+                        <strong>{{ c[1] }}</strong>
+                        <small style="color: gray;">{{ c[2].strftime('%d-%m-%Y %H:%M') }}</small><br>
+                        {{ c[0] }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay comentarios aún.</p>
+            {% endif %}
         </div>
+
+        <!-- Formulario de nuevo comentario -->
+        <form action="{{ url_for('comentar') }}" method="post" style="margin-top: 10px;">
+            <input type="hidden" name="id_publicacion" value="{{ pub['id'] }}">
+            <textarea name="texto" rows="2" placeholder="Escribe un comentario..." required></textarea><br>
+            <button type="submit">Comentar</button>
+        </form>
     </div>
     {% endfor %}
-
-    <footer class="toe">
-        <div class="navbarD">
-            <a href="{{ url_for('inicio') }}"><img src="{{ url_for('static', filename='img/Home.png') }}" alt="Inicio"></a>
-            <a href="{{ url_for('explorar') }}"><img src="{{ url_for('static', filename='img/lupa.png') }}" alt="Explorar"></a>
-            <a href="{{ url_for('perfil') }}"><img src="{{ url_for('static', filename='img/tuperfil.png') }}" alt="Perfil"></a>
-            <a href="{{ url_for('amigos') }}"><img src="{{ url_for('static', filename='img/amigos.png') }}" alt="Amigos"></a>
-        </div>
-    </footer>
 </body>
 </html>
