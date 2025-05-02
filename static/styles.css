@@ -1,110 +1,183 @@
+/* Variables de color */
+:root {
+    --primary-color: #ffdb58;
+    --secondary-color: #f5f5f5;
+    --text-color: #333;
+    --light-gray: #f0f0f0;
+    --medium-gray: #ddd;
+    --dark-gray: #888;
+    --white: #fff;
+}
+
+/* Estilos base */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0d8; /* fondo suave tipo amarillo claro */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
-.post {
-    max-width: 600px;
-    margin: 20px auto;
-    border: 1px solid #dddddd;
+/* Header */
+.main-header {
+    background-color: var(--primary-color);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Formularios */
+.new-post, .post {
+    background-color: var(--white);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
     border-radius: 5px;
-    background-color: #f9f7e1;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--medium-gray);
+    margin-bottom: 10px;
+    resize: vertical;
+    font-family: inherit;
 }
 
-.header {
+/* Botones */
+.btn-post, .btn-like, .btn-comment {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.btn-post {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.btn-like {
+    background: none;
+    margin-right: 15px;
+}
+
+.btn-like.active .like-icon {
+    opacity: 1;
+}
+
+.btn-like:not(.active) .like-icon {
+    opacity: 0.6;
+}
+
+.btn-comment {
+    background: none;
+    color: var(--text-color);
+}
+
+/* Post */
+.post-header {
+    margin-bottom: 10px;
+}
+
+.post-content {
+    margin-bottom: 15px;
+}
+
+.post-actions {
     display: flex;
     align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #dddddd;
+    margin-top: 15px;
 }
 
-.header img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
+.like-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
 }
 
-.username {
-    font-weight: bold;
+/* Comentarios */
+.comments {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--light-gray);
+    display: none;
 }
 
-.caption {
-    padding: 10px;
-    font-size: 14px;
-    color: #333;
+.comment-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 15px;
 }
 
-.actions {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    border-top: 1px solid #ddd;
+.comment-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--light-gray);
 }
 
-.actions button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    font-size: 18px;
+.comment-user {
+    display: block;
 }
 
-.toe {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fafafa;
-    border-top: 1px solid #ddd;
+.comment-time {
+    color: var(--dark-gray);
+    font-size: 0.8em;
+    margin-left: 10px;
 }
 
-.navbarD {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
+.comment-text {
+    margin-top: 5px;
 }
 
-.navbarD a {
-    color: #333;
-    text-decoration: none;
+.no-comments {
+    color: var(--dark-gray);
+    font-style: italic;
 }
 
-.navbarD img {
-    width: 20px;
-    height: 20px;
+/* Efectos hover */
+.btn-like:hover, .btn-comment:hover {
+    background-color: var(--light-gray);
 }
 
-.authentication-section,
-.appearance-section {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.btn-post:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+/* === Efecto para ícono de like (pato) === */
+.like-icon {
+    width: 24px;
+    height: 24px;
+    transition: filter 0.3s ease, transform 0.3s ease;
+    vertical-align: middle;
 }
 
-input[type="text"] {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button {
-    background-color: #ffd700;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #ffa500;
+.btn-like.active .like-icon {
+    filter: brightness(1.1) sepia(1) hue-rotate(40deg) saturate(6);
+    transform: scale(1.2);
 }

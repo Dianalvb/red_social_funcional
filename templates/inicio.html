@@ -2,55 +2,110 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio - Ducktito</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ducktito - Inicio</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='inicio.css') }}">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Bienvenido a Ducktito</h1>
+    <header class="main-header">
+        {% if 'nombre' in session %}
+            <h1>Bienvenido a Ducktito, {{ session['nombre'] }}</h1>
+        {% else %}
+            <h1>Bienvenido a Ducktito</h1>
+        {% endif %}
+        <nav>
+            <a href="{{ url_for('inicio') }}">Inicio</a>
+            <a href="{{ url_for('explorar') }}">Explorar</a>
+            {% if 'id_usuario' in session %}
+                <a href="{{ url_for('perfil', id_usuario=session['id_usuario']) }}">Mi Perfil</a>
+            {% endif %}
+        </nav>
     </header>
 
-    {% for pub in publicaciones %}
-    <div class="post">
-        <div><strong>{{ pub['usuario'] }}</strong></div>
-        <p>{{ pub['contenido'] }}</p>
-
-        <!-- Botón de like -->
-        <form action="{{ url_for('dar_like', id_publicacion=pub['id']) }}" method="post" style="display:inline;">
-            <button type="submit" style="background:none; border:none; padding:0;">
-                <img src="{{ url_for('static', filename='img/like_duck.png') }}"
-                     width="32"
-                     class="{% if pub['ya_dio_like'] %}like-activo{% else %}like-inactivo{% endif %}"
-                     alt="Like">
-            </button>
-            <span>{{ pub['likes'] }}</span>
+    <section class="new-post">
+        <form action="{{ url_for('publicar') }}" method="post">
+            <textarea name="contenido" placeholder="¿Qué estás pensando?" required></textarea>
+            <button type="submit" class="btn-post">Publicar</button>
         </form>
+    </section>
 
-        <!-- Comentarios -->
-        <div class="comentarios">
+    {% for pub in publicaciones %}
+    <article class="post">
+        <div class="post-header">
+            <strong>{{ pub['usuario'] }}</strong>
+            {% if pub['fecha_hora'] %}
+                <time datetime="{{ pub['fecha_hora'].isoformat() }}" class="post-time">
+                    {{ pub['fecha_hora'].strftime('%d/%m/%Y %H:%M') }}
+                </time>
+            {% else %}
+                <small>Fecha no disponible</small>
+            {% endif %}
+        </div>
+
+        <p class="post-content">{{ pub['contenido'] }}</p>
+
+        <div class="post-actions">
+            <form action="{{ url_for('dar_like', id_publicacion=pub['id_publicacion']) }}" method="post" class="like-form">
+                <button type="submit" class="btn-like {% if pub['ya_dio_like'] %}active{% endif %}" aria-label="Dar like a esta publicación">
+                    <img 
+                        src="{{ url_for('static', filename='img/pato_iluminado.png') if pub['ya_dio_like'] else url_for('static', filename='img/like_duck.png') }}" 
+                        alt="Icono de like" 
+                        class="like-icon">
+                    <span>{{ pub['likes'] }}</span>
+                </button>
+            </form>
+            
+
+            <button class="btn-comment" onclick="toggleComentarios({{ pub['id_publicacion'] }})" aria-expanded="false" aria-controls="comentarios-{{ pub['id_publicacion'] }}">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                <span>{{ pub['num_comentarios'] }}</span>
+            </button>
+        </div>
+
+        <div class="comments" id="comentarios-{{ pub['id_publicacion'] }}" style="display: none;">
             <h4>Comentarios:</h4>
             {% if pub['comentarios'] %}
-                <ul style="list-style: none; padding-left: 0;">
-                    {% for c in pub['comentarios'] %}
-                    <li>
-                        <strong>{{ c[1] }}</strong>
-                        <small style="color: gray;">{{ c[2].strftime('%d-%m-%Y %H:%M') }}</small><br>
-                        {{ c[0] }}
+                <ul class="comment-list">
+                    {% for comentario in pub['comentarios'] %}
+                    <li class="comment-item">
+                        <strong>{{ comentario['usuario'] }}</strong>
+                        {% if comentario['fecha'] %}
+                            <time datetime="{{ comentario['fecha'].isoformat() }}">
+                                {{ comentario['fecha'].strftime('%d/%m/%Y %H:%M') }}
+                            </time>
+                        {% else %}
+                            <small>Fecha no disponible</small>
+                        {% endif %}
+                        <p>{{ comentario['texto'] }}</p>
                     </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No hay comentarios aún.</p>
+                <p class="no-comments">No hay comentarios aún</p>
             {% endif %}
-        </div>
 
-        <!-- Formulario de nuevo comentario -->
-        <form action="{{ url_for('comentar') }}" method="post" style="margin-top: 10px;">
-            <input type="hidden" name="id_publicacion" value="{{ pub['id'] }}">
-            <textarea name="texto" rows="2" placeholder="Escribe un comentario..." required></textarea><br>
-            <button type="submit">Comentar</button>
-        </form>
-    </div>
+            <form action="{{ url_for('comentar') }}" method="post" class="comment-form">
+                <input type="hidden" name="id_publicacion" value="{{ pub['id_publicacion'] }}">
+                <textarea name="texto" placeholder="Escribe un comentario..." required></textarea>
+                <button type="submit" class="btn-post">Comentar</button>
+            </form>
+        </div>
+    </article>
     {% endfor %}
+
+    <script>
+    function toggleComentarios(id) {
+        const comentarios = document.getElementById('comentarios-' + id);
+        const button = document.querySelector(`button[aria-controls="comentarios-${id}"]`);
+        if (comentarios && button) {
+            const isExpanded = comentarios.style.display === 'block';
+            comentarios.style.display = isExpanded ? 'none' : 'block';
+            button.setAttribute('aria-expanded', !isExpanded);
+        }
+    }
+    </script>
 </body>
 </html>
+
