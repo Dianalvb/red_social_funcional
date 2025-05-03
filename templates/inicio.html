@@ -16,10 +16,19 @@
             <h1>Bienvenido a Ducktito</h1>
         {% endif %}
         <nav>
-            <a href="{{ url_for('inicio') }}">Inicio</a>
-            <a href="{{ url_for('explorar') }}">Explorar</a>
+            <a href="{{ url_for('inicio') }}">
+                <img src="{{ url_for('static', filename='img/Home.png') }}" alt="Inicio">
+                Inicio
+            </a>
+            <a href="{{ url_for('explorar') }}">
+                <img src="{{ url_for('static', filename='img/lupa.png') }}" alt="Explorar">
+                Explorar
+            </a>
             {% if 'id_usuario' in session %}
-                <a href="{{ url_for('perfil', id_usuario=session['id_usuario']) }}">Mi Perfil</a>
+                <a href="{{ url_for('perfil', id_usuario=session['id_usuario']) }}">
+                    <img src="{{ url_for('static', filename='img/tuperfil.png') }}" alt="Mi Perfil">
+                    Mi Perfil
+                </a>
             {% endif %}
         </nav>
     </header>
