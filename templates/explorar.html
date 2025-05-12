@@ -1,70 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explorar</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='explorar.css') }}">
-    <!-- Íconos Font Awesome -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<div class="container">
 
-    <div class="container">
-        <h1 class="page-title">Explorar Publicaciones</h1>
+    <h1 class="page-title">Explorar</h1>
 
-        <!-- Nueva publicación -->
-        <div class="card nueva-publicacion">
-            <h2>Crear nueva publicación</h2>
-            <form action="{{ url_for('publicar') }}" method="post">
-                <div class="form-group">
-                    <textarea name="contenido" placeholder="¿Qué estás pensando?" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Publicar</button>
-            </form>
-        </div>
-
-        {% if error %}
-        <div class="error-message">{{ error }}</div>
-        {% endif %}
-        
-        {% if success %}
-        <div class="success-message">{{ success }}</div>
-        {% endif %}
-
-        <div class="card">
-            <h2>Últimas publicaciones</h2>
-
-            {% if publicaciones_data %}
-                {% for pub in publicaciones_data %}
-                <div class="publicacion">
-                    <div class="publicacion-header">
-                        <div class="usuario-info">
-                            <div class="avatar">{{ pub.nombre[0] }}</div>
-                            <div>
-                                <div class="nombre-usuario">{{ pub.nombre }}</div>
-                                <div class="fecha">{{ pub.fecha_hora.strftime('%d-%m-%Y %H:%M') }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="publicacion-contenido">
-                        {{ pub.contenido }}
-                    </div>
-                    <div class="publicacion-footer">
-                        <form action="{{ url_for('dar_like') }}" method="post" style="display: inline;">
-                            <input type="hidden" name="id_publicacion" value="{{ pub.id_publicacion }}">
-                            <button type="submit" class="like-btn"> 
-                                <i class="fas fa-heart"></i> {{ pub.likes }}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay publicaciones disponibles.</p>
-            {% endif %}
-        </div>
+    <!-- Pestañas -->
+    <div class="tabs">
+        <button id="btn-recomendaciones" class="active" onclick="mostrar('recomendaciones')">👥 Recomendaciones</button>
+        <button id="btn-publicaciones" onclick="mostrar('publicaciones')">📝 Publicaciones</button>
+        <button id="btn-comentarios" onclick="mostrar('comentarios')">💬 Comentarios recientes</button>
     </div>
+
+    <!-- Sección: Recomendaciones -->
+    <div id="recomendaciones" class="tab-content active">
+        {% if recomendaciones %}
+            <ul class="lista-usuarios">
+                {% for rec in recomendaciones %}
+                <li class="usuario-card">
+                    <div class="nombre">
+                        <a href="{{ url_for('perfil', id_usuario=rec.id) }}">{{ rec.nombre }}</a>
+                    </div>
+                    <div class="accion">
+                        {% if not rec.ya_segue %}
+                            <form action="{{ url_for('seguir', id_usuario2=rec.id) }}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-seguir">+ Seguir</button>
+                            </form>
+                        {% else %}
+                            <span class="siguiendo">Siguiendo</span>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay usuarios para mostrar.</p>
+        {% endif %}
+    </div>
+
+    <!-- Sección: Publicaciones -->
+    <div id="publicaciones" class="tab-content">
+        {% if publicaciones %}
+            {% for pub in publicaciones %}
+            <div class="publicacion">
+                <div class="publicacion-header">
+                    <a href="{{ url_for('perfil', id_usuario=pub.id_autor) }}">
+                        <strong>{{ pub.nombre }}</strong>
+                    </a><br>
+                    <small>{{ pub.fecha_hora.strftime('%d-%m-%Y %H:%M') }}</small>
+                </div>
+                <div class="publicacion-contenido">
+                    {{ pub.contenido }}
+                </div>
+                <div class="publicacion-footer">
+                    ❤️ {{ pub.likes }} likes
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay publicaciones disponibles.</p>
+        {% endif %}
+    </div>
+
+    <!-- Sección: Comentarios recientes -->
+    <div id="comentarios" class="tab-content">
+        <h2>Últimos comentarios</h2>
+        {% if comentarios_recientes %}
+            <ul class="comentarios-recientes">
+                {% for c in comentarios_recientes %}
+                <li class="comentario-card">
+                    <div class="comentario-header">
+                        <a href="{{ url_for('perfil', id_usuario=c.id_usuario) }}">
+                            <strong>{{ c.usuario }}</strong>
+                        </a>
+                        <small>{{ c.fecha.strftime('%d-%m-%Y %H:%M') }}</small>
+                    </div>
+                    <p>{{ c.texto }}</p>
+                    {% if not c.ya_segue %}
+                        <form action="{{ url_for('seguir', id_usuario2=c.id_usuario) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-seguir">+ Seguir</button>
+                        </form>
+                    {% else %}
+                        <span class="siguiendo">Siguiendo</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay comentarios recientes.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Script para pestañas -->
+<script>
+function mostrar(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+
+    document.getElementById(tab).classList.add('active');
+    document.getElementById('btn-' + tab).classList.add('active');
+}
+</script>
 </body>
 </html>

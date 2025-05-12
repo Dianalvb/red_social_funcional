@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime  # ✅ CAMBIO aquí en lugar de `import datetime`
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import psycopg2
 
@@ -13,6 +13,15 @@ def get_db_connection():
         password="Itzcoatl1",
         options="-c client_encoding=UTF8"
     )
+def usuario_ya_segue(id1, id2):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT 1 FROM Amistades WHERE id_usuario1 = %s AND id_usuario2 = %s", (id1, id2))
+    resultado = cur.fetchone()
+    cur.close()
+    conn.close()
+    return bool(resultado)
+
 
 @app.route('/')
 def home():
@@ -109,14 +118,16 @@ def inicio():
     if 'id_usuario' not in session:
         flash('Por favor inicia sesión primero', 'warning')
         return redirect(url_for('login'))
-    
+
     try:
         conn = get_db_connection()
         cur = conn.cursor()
 
+        id_actual = session['id_usuario']
+
         # Obtener publicaciones
         cur.execute("""
-            SELECT p.id_publicacion, u.nombre, p.contenido, p.fecha_hora
+            SELECT p.id_publicacion, u.id_usuario, u.nombre, p.contenido, p.fecha_hora
             FROM Publicaciones p
             JOIN Usuarios u ON p.id_usuario = u.id_usuario
             ORDER BY p.fecha_hora DESC
@@ -125,7 +136,7 @@ def inicio():
 
         publicaciones_data = []
         for pub in publicaciones:
-            pub_id, usuario, contenido, fecha_hora = pub
+            pub_id, id_autor, nombre_autor, contenido, fecha_hora = pub
 
             # Contar likes
             cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s AND tipo_reaccion = 'like'", (pub_id,))
@@ -135,7 +146,7 @@ def inicio():
             cur.execute("""
                 SELECT id_reaccion FROM Reacciones 
                 WHERE id_publicacion = %s AND id_usuario = %s AND tipo_reaccion = 'like'
-            """, (pub_id, session['id_usuario']))
+            """, (pub_id, id_actual))
             ya_dio_like = cur.fetchone() is not None
 
             # Obtener comentarios
@@ -152,18 +163,28 @@ def inicio():
                 'fecha': c[2]
             } for c in cur.fetchall()]
 
+            # Verificar si ya lo sigue
+            cur.execute("""
+                SELECT 1 FROM Amistades
+                WHERE id_usuario1 = %s AND id_usuario2 = %s
+            """, (id_actual, id_autor))
+            ya_sigue = cur.fetchone() is not None
+
             publicaciones_data.append({
                 'id_publicacion': pub_id,
-                'usuario': usuario,
+                'id_autor': id_autor,                # 🔹 Para botón seguir
+                'usuario': nombre_autor,
                 'contenido': contenido,
                 'fecha_hora': fecha_hora,
                 'likes': likes,
                 'ya_dio_like': ya_dio_like,
                 'comentarios': comentarios,
-                'num_comentarios': len(comentarios)
+                'num_comentarios': len(comentarios),
+                'ya_sigue': ya_sigue,                # 🔹 Para mostrar "Siguiendo"
+                'es_mi_post': id_autor == id_actual  # 🔹 Para evitar seguirse a sí mismo
             })
 
-        return render_template('inicio.html', publicaciones=publicaciones_data)
+        return render_template('inicio.html', publicaciones=publicaciones_data, id_actual=id_actual)
 
     except Exception as e:
         flash('Error al cargar las publicaciones', 'error')
@@ -172,6 +193,7 @@ def inicio():
     finally:
         cur.close()
         conn.close()
+
 
 @app.route('/publicar', methods=['POST'])
 def publicar():
@@ -284,45 +306,80 @@ def dar_like(id_publicacion):
 def explorar():
     if 'id_usuario' not in session:
         return redirect(url_for('login'))
-    
+
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        
+
+        id_actual = session['id_usuario']
+
+        # Recomendaciones: otros usuarios
+        cur.execute("SELECT id_usuario, nombre FROM Usuarios WHERE id_usuario != %s", (id_actual,))
+        usuarios = cur.fetchall()
+
+        recomendaciones = []
+        for id_u, nombre in usuarios:
+            recomendaciones.append({
+                'id': id_u,
+                'nombre': nombre,
+                'ya_segue': usuario_ya_segue(id_actual, id_u)
+            })
+
+        # Publicaciones recientes con likes y autor
         cur.execute("""
-            SELECT p.id_publicacion, u.id_usuario, u.nombre, p.contenido, p.fecha_hora
+            SELECT p.id_publicacion, p.contenido, p.fecha_hora, u.nombre, u.id_usuario
             FROM Publicaciones p
             JOIN Usuarios u ON p.id_usuario = u.id_usuario
             ORDER BY p.fecha_hora DESC
         """)
-        publicaciones = cur.fetchall()
-
-        publicaciones_data = []
-        for pub in publicaciones:
-            pub_id, user_id, nombre, contenido, fecha_hora = pub
-            
-            # Contar likes
-            cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s", (pub_id,))
+        publicaciones = []
+        for row in cur.fetchall():
+            pub_id, contenido, fecha_hora, nombre, id_autor = row
+            cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s AND tipo_reaccion = 'like'", (pub_id,))
             likes = cur.fetchone()[0]
-            
-            publicaciones_data.append({
-                'id_publicacion': pub_id,
-                'id_usuario': user_id,
-                'nombre': nombre,
+
+            publicaciones.append({
+                'id': pub_id,
                 'contenido': contenido,
                 'fecha_hora': fecha_hora,
-                'likes': likes
+                'nombre': nombre,
+                'likes': likes,
+                'id_autor': id_autor
             })
 
-        return render_template('explorar.html', publicaciones=publicaciones_data)
-    
-    except Exception as e:
-        flash('Error al cargar publicaciones', 'error')
-        app.logger.error(f"Error en explorar: {str(e)}")
-        return redirect(url_for('inicio'))
-    finally:
+        # Comentarios recientes (de otros usuarios)
+        cur.execute("""
+            SELECT c.texto, c.fecha_hora, u.nombre, u.id_usuario
+            FROM Comentarios c
+            JOIN Usuarios u ON c.id_usuario = u.id_usuario
+            WHERE u.id_usuario != %s
+            ORDER BY c.fecha_hora DESC
+            LIMIT 10
+        """, (id_actual,))
+
+        comentarios_recientes = [{
+            'texto': row[0],
+            'fecha': row[1],
+            'usuario': row[2],
+            'id_usuario': row[3],
+            'ya_segue': usuario_ya_segue(id_actual, row[3])
+        } for row in cur.fetchall()]
+
         cur.close()
         conn.close()
+
+        return render_template(
+            'explorar.html',
+            recomendaciones=recomendaciones,
+            publicaciones=publicaciones,
+            comentarios_recientes=comentarios_recientes
+        )
+
+    except Exception as e:
+        flash('Error al cargar explorar', 'error')
+        app.logger.error(f"Error en explorar: {str(e)}")
+        return redirect(url_for('inicio'))
+
 
 @app.route('/perfil/<int:id_usuario>')
 def perfil(id_usuario):
@@ -332,61 +389,160 @@ def perfil(id_usuario):
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        
-        # Obtener información del usuario
+
+        # Obtener nombre
         cur.execute("SELECT nombre FROM Usuarios WHERE id_usuario = %s", (id_usuario,))
         usuario = cur.fetchone()
-        
         if not usuario:
             flash('Usuario no encontrado', 'error')
             return redirect(url_for('inicio'))
-        
+
         nombre_usuario = usuario[0]
-        
-        # Obtener publicaciones del usuario
+
+        # Publicaciones
         cur.execute("""
-            SELECT id_publicacion, contenido, fecha_hora 
-            FROM Publicaciones 
-            WHERE id_usuario = %s 
+            SELECT id_publicacion, contenido, fecha_hora
+            FROM Publicaciones
+            WHERE id_usuario = %s
             ORDER BY fecha_hora DESC
         """, (id_usuario,))
-        
-        publicaciones = []
-        for pub in cur.fetchall():
+        publicaciones = cur.fetchall()
+
+        # Contar seguidores y seguidos
+        cur.execute("SELECT COUNT(*) FROM Amistades WHERE id_usuario2 = %s", (id_usuario,))
+        seguidores = cur.fetchone()[0]
+
+        cur.execute("SELECT COUNT(*) FROM Amistades WHERE id_usuario1 = %s", (id_usuario,))
+        seguidos = cur.fetchone()[0]
+
+        # Ver si ya lo sigue
+        ya_segue = False
+        if id_usuario != session['id_usuario']:
+            cur.execute("""
+                SELECT 1 FROM Amistades 
+                WHERE id_usuario1 = %s AND id_usuario2 = %s
+            """, (session['id_usuario'], id_usuario))
+            ya_segue = cur.fetchone() is not None
+
+        publicaciones_data = []
+        for pub in publicaciones:
             pub_id, contenido, fecha_hora = pub
-            
-            # Contar likes
             cur.execute("SELECT COUNT(*) FROM Reacciones WHERE id_publicacion = %s", (pub_id,))
             likes = cur.fetchone()[0]
-            
-            publicaciones.append({
+
+            publicaciones_data.append({
                 'id_publicacion': pub_id,
                 'contenido': contenido,
                 'fecha_hora': fecha_hora,
                 'likes': likes
             })
 
-        return render_template('perfil.html', 
-                             publicaciones=publicaciones, 
-                             nombre_usuario=nombre_usuario,
-                             id_usuario_perfil=id_usuario,
-                             es_mi_perfil=(id_usuario == session['id_usuario']))
-    
+        return render_template('perfil.html',
+                               nombre_usuario=nombre_usuario,
+                               publicaciones=publicaciones_data,
+                               seguidores=seguidores,
+                               seguidos=seguidos,
+                               es_mi_perfil=(id_usuario == session['id_usuario']),
+                               ya_segue=ya_segue,
+                               id_usuario_perfil=id_usuario)
+
     except Exception as e:
-        flash('Error al cargar el perfil', 'error')
+        flash('Error al cargar perfil', 'error')
         app.logger.error(f"Error en perfil: {str(e)}")
         return redirect(url_for('inicio'))
     finally:
         cur.close()
         conn.close()
 
-@app.route('/amigos')
-def amigos():
+
+@app.route('/seguir/<int:id_usuario2>', methods=['POST'])
+def seguir(id_usuario2):
     if 'id_usuario' not in session:
         return redirect(url_for('login'))
-    
-    # Implementación básica (puedes expandirla)
-    return render_template('amigos.html')
+
+    id_usuario1 = session['id_usuario']
+    if id_usuario1 == id_usuario2:
+        return redirect(request.referrer)
+
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Insertar relación siguiendo si no existe
+        cur.execute("""
+            INSERT INTO Amistades (id_usuario1, id_usuario2, estado, fecha_hora)
+            VALUES (%s, %s, 'siguiendo', NOW())
+            ON CONFLICT (id_usuario1, id_usuario2) DO NOTHING
+        """, (id_usuario1, id_usuario2))
+
+        # Verificar si el otro usuario también lo sigue
+        cur.execute("""
+            SELECT estado FROM Amistades
+            WHERE id_usuario1 = %s AND id_usuario2 = %s
+        """, (id_usuario2, id_usuario1))
+        inverso = cur.fetchone()
+
+        if inverso:
+            # Actualizar ambos a 'amistad'
+            cur.execute("""
+                UPDATE Amistades
+                SET estado = 'amistad'
+                WHERE (id_usuario1 = %s AND id_usuario2 = %s)
+                   OR (id_usuario1 = %s AND id_usuario2 = %s)
+            """, (id_usuario1, id_usuario2, id_usuario2, id_usuario1))
+
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        app.logger.error(f"Error al seguir: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(request.referrer)
+
+@app.route('/dejar_de_seguir/<int:id_usuario2>', methods=['POST'])
+def dejar_de_seguir(id_usuario2):
+    if 'id_usuario' not in session:
+        return redirect(url_for('login'))
+
+    id_usuario1 = session['id_usuario']
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Eliminar la relación actual
+        cur.execute("""
+            DELETE FROM Amistades
+            WHERE id_usuario1 = %s AND id_usuario2 = %s
+        """, (id_usuario1, id_usuario2))
+
+        # Verificar si el otro lo seguía (y estaban en amistad)
+        cur.execute("""
+            SELECT estado FROM Amistades
+            WHERE id_usuario1 = %s AND id_usuario2 = %s
+        """, (id_usuario2, id_usuario1))
+        inverso = cur.fetchone()
+
+        if inverso and inverso[0] == 'amistad':
+            # El otro sigue, pero ya no es mutuo → baja a 'siguiendo'
+            cur.execute("""
+                UPDATE Amistades
+                SET estado = 'siguiendo'
+                WHERE id_usuario1 = %s AND id_usuario2 = %s
+            """, (id_usuario2, id_usuario1))
+
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        app.logger.error(f"Error al dejar de seguir: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(request.referrer)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
